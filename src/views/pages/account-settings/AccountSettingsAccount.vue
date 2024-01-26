@@ -1,28 +1,32 @@
 <script setup>
 import avatar1 from '@images/avatars/avatar-1.png'
+import { useAccoutSettingAccoutStore } from '@/stores/accountSettingsAccountStore'
 
-const accountData = {
-  avatarImg: avatar1,
-  firstName: 'john',
-  lastName: 'Doe',
-  email: 'johnDoe@example.com',
-  org: 'ThemeSelection',
-  phone: '+1 (917) 543-9876',
-  address: '123 Main St, New York, NY 10001',
-  state: 'New York',
-  zip: '10001',
-  country: 'USA',
-  language: 'English',
-  timezone: '(GMT-11:00) International Date Line West',
-  currency: 'USD',
-}
+// const accountDataStore.account.= {
+//   avatarImg: avatar1,
+//   firstName: 'john',
+//   lastName: 'Doe',
+//   email: 'johnDoe@example.com',
+//   org: 'ThemeSelection',
+//   phone: '+1 (917) 543-9876',
+//   address: '123 Main St, New York, NY 10001',
+//   state: 'New York',
+//   zip: '10001',
+//   country: 'USA',
+//   language: 'English',
+//   timezone: '(GMT-11:00) International Date Line West',
+//   currency: 'USD',
+// }
+const accountDataStore = useAccoutSettingAccoutStore()
+
+
 
 const refInputEl = ref()
-const accountDataLocal = ref(structuredClone(accountData))
+
 const isAccountDeactivated = ref(false)
 
 const resetForm = () => {
-  accountDataLocal.value = structuredClone(accountData)
+  accountDataStore.account = accountDataStore.defaccount
 }
 
 const changeAvatar = file => {
@@ -32,14 +36,19 @@ const changeAvatar = file => {
     fileReader.readAsDataURL(files[0])
     fileReader.onload = () => {
       if (typeof fileReader.result === 'string')
-        accountDataLocal.value.avatarImg = fileReader.result
+        accountDataStore.account.avatarImg = fileReader.result
     }
   }
 }
 
 // reset avatar image
 const resetAvatar = () => {
-  accountDataLocal.value.avatarImg = accountData.avatarImg
+  accountDataStore.account.avatarImg = accountDataStore.defaccount.avatarImg
+}
+
+// update account
+const updateAccount = () =>{
+  accountDataStore.updateAccountSetting(accountDataStore.account)
 }
 
 const timezones = [
@@ -110,7 +119,7 @@ const currencies = [
             rounded="lg"
             size="100"
             class="me-6"
-            :image="accountDataLocal.avatarImg"
+            :image="accountDataStore.account.avatarImg"
           />
 
           <!-- 👉 Upload Photo -->
@@ -168,7 +177,7 @@ const currencies = [
                 cols="12"
               >
                 <VTextField
-                  v-model="accountDataLocal.firstName"
+                  v-model="accountDataStore.account.firstName"
                   placeholder="John"
                   label="First Name"
                 />
@@ -180,7 +189,7 @@ const currencies = [
                 cols="12"
               >
                 <VTextField
-                  v-model="accountDataLocal.lastName"
+                  v-model="accountDataStore.account.lastName"
                   placeholder="Doe"
                   label="Last Name"
                 />
@@ -192,7 +201,7 @@ const currencies = [
                 md="6"
               >
                 <VTextField
-                  v-model="accountDataLocal.email"
+                  v-model="accountDataStore.account.email"
                   label="E-mail"
                   placeholder="johndoe@gmail.com"
                   type="email"
@@ -205,7 +214,7 @@ const currencies = [
                 md="6"
               >
                 <VTextField
-                  v-model="accountDataLocal.org"
+                  v-model="accountDataStore.account.org"
                   label="Organization"
                   placeholder="ThemeSelection"
                 />
@@ -217,7 +226,7 @@ const currencies = [
                 md="6"
               >
                 <VTextField
-                  v-model="accountDataLocal.phone"
+                  v-model="accountDataStore.account.phone"
                   label="Phone Number"
                   placeholder="+1 (917) 543-9876"
                 />
@@ -229,7 +238,7 @@ const currencies = [
                 md="6"
               >
                 <VTextField
-                  v-model="accountDataLocal.address"
+                  v-model="accountDataStore.account.address"
                   label="Address"
                   placeholder="123 Main St, New York, NY 10001"
                 />
@@ -241,7 +250,7 @@ const currencies = [
                 md="6"
               >
                 <VTextField
-                  v-model="accountDataLocal.state"
+                  v-model="accountDataStore.account.state"
                   label="State"
                   placeholder="New York"
                 />
@@ -253,7 +262,7 @@ const currencies = [
                 md="6"
               >
                 <VTextField
-                  v-model="accountDataLocal.zip"
+                  v-model="accountDataStore.account.zip"
                   label="Zip Code"
                   placeholder="10001"
                 />
@@ -265,7 +274,7 @@ const currencies = [
                 md="6"
               >
                 <VSelect
-                  v-model="accountDataLocal.country"
+                  v-model="accountDataStore.account.country"
                   label="Country"
                   :items="['USA', 'Canada', 'UK', 'India', 'Australia']"
                   placeholder="Select Country"
@@ -278,7 +287,7 @@ const currencies = [
                 md="6"
               >
                 <VSelect
-                  v-model="accountDataLocal.language"
+                  v-model="accountDataStore.account.language"
                   label="Language"
                   placeholder="Select Language"
                   :items="['English', 'Spanish', 'Arabic', 'Hindi', 'Urdu']"
@@ -291,7 +300,7 @@ const currencies = [
                 md="6"
               >
                 <VSelect
-                  v-model="accountDataLocal.timezone"
+                  v-model="accountDataStore.account.timezone"
                   label="Timezone"
                   placeholder="Select Timezone"
                   :items="timezones"
@@ -305,7 +314,7 @@ const currencies = [
                 md="6"
               >
                 <VSelect
-                  v-model="accountDataLocal.currency"
+                  v-model="accountDataStore.account.currency"
                   label="Currency"
                   placeholder="Select Currency"
                   :items="currencies"
@@ -318,7 +327,7 @@ const currencies = [
                 cols="12"
                 class="d-flex flex-wrap gap-4"
               >
-                <VBtn>Save changes</VBtn>
+                <VBtn @click="updateAccount">Save changes</VBtn>
 
                 <VBtn
                   color="secondary"
