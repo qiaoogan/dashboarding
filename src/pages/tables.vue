@@ -4,6 +4,7 @@ import DemoSimpleTableDensity from '@/views/pages/tables/DemoSimpleTableDensity.
 import DemoSimpleTableFixedHeader from '@/views/pages/tables/DemoSimpleTableFixedHeader.vue'
 import DemoSimpleTableHeight from '@/views/pages/tables/DemoSimpleTableHeight.vue'
 import DemoSimpleTableTheme from '@/views/pages/tables/DemoSimpleTableTheme.vue'
+import DemoSimpleTableBook from '@/views/pages/tables/DemoSimpleTableBook.vue'
 </script>
 
 <template>
@@ -47,6 +48,15 @@ import DemoSimpleTableTheme from '@/views/pages/tables/DemoSimpleTableTheme.vue'
           You can fix the header of table by using the <code>fixed-header</code> prop.
         </VCardText>
         <DemoSimpleTableFixedHeader />
+      </VCard>
+    </VCol>
+
+    <VCol cols="12">
+      <VCard title="Books">
+        <VCardText>
+          You can change the books by using the <code>books</code> prop.
+        </VCardText>
+        <DemoSimpleTableBook />
       </VCard>
     </VCol>
   </VRow>
