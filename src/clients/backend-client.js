@@ -12,8 +12,14 @@ export const getBooks = async () => {
 
 }
 
-export const getAccount = async () => {
-  const url = buildUrl(backendConfig.SETTINGS_BATH_PATH, backendConfig.SETTINGS_ACCOUNT_PATH)
+export const getDefaultAccount = async () => {
+  const url = buildUrl(backendConfig.SETTINGS_BATH_PATH, backendConfig.SETTINGS_ACCOUNT_DEFAULT_PATH)
+
+  return await httpUtls.get(url)
+}
+
+export const searchAccount = async aid => {
+  const url = buildUrl(backendConfig.SETTINGS_BATH_PATH, backendConfig.SETTINGS_ACCOUNT_PATH) + `?aid=${aid}`
 
   return await httpUtls.get(url)
 }

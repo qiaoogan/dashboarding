@@ -11,10 +11,10 @@ export const useAccoutSettingAccoutStore = defineStore('accountSettingsAccount',
     async fetchAccount() {
       console.log(`start fetching account data ...`)
 
-      const response = await backendClient.getAccount()
+      let response = await backendClient.getDefaultAccount()
+      response = await backendClient.searchAccount(response.aid)
 
       this.account = response
-
     },
 
     async updateAccountSetting(newValue) {
@@ -22,8 +22,7 @@ export const useAccoutSettingAccoutStore = defineStore('accountSettingsAccount',
 
       console.log("new data"+ JSON.stringify(newValue), "*****")
 
-      const response = await backendClient.updateAccount(newValue)
-
+      await backendClient.updateAccount(newValue)
     },
   },
 })

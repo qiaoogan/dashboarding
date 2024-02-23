@@ -154,9 +154,9 @@ const upgradeBanner = computed(() => {
         }"
       />
     </template>
-
+    <!-- 
     <template #after-vertical-nav-items>
-      <!-- 👉 illustration -->
+    
       <a
         href="https://themeselection.com/item/sneat-vuetify-vuejs-admin-template"
         target="_blank"
@@ -172,7 +172,7 @@ const upgradeBanner = computed(() => {
         >
       </a>
     </template>
-
+  -->
     <!-- 👉 Pages -->
     <slot />
 
