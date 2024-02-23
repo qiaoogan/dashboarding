@@ -1,62 +1,29 @@
 import { defineStore } from 'pinia'
 import avatar1 from '@images/avatars/avatar-1.png'
+import * as backendClient from '@/clients/backend-client'
 
 
 export const useAccoutSettingAccoutStore = defineStore('accountSettingsAccount', {
   state: () => ({
-    account: {
-      avatarImg: avatar1,
-      firstName: 'john',
-      lastName: 'Doe',
-      email: 'johnDoe@example.com',
-      org: 'ThemeSelection',
-      phone: '+1 (917) 543-9876',
-      address: '123 Main St, New York, NY 10001',
-      state: 'New York',
-      zip: '10001',
-      country: 'USA',
-      language: 'English',
-      timezone: '(GMT-11:00) International Date Line West',
-      currency: 'USD',
-    },
-    defaccount: {
-      avatarImg: avatar1,
-      firstName: 'john',
-      lastName: 'Doe',
-      email: 'johnDoe@example.com',
-      org: 'ThemeSelection',
-      phone: '+1 (917) 543-9876',
-      address: '123 Main St, New York, NY 10001',
-      state: 'New York',
-      zip: '10001',
-      country: 'USA',
-      language: 'English',
-      timezone: '(GMT-11:00) International Date Line West',
-      currency: 'USD',
-    },
+    account: null,
   }),
   actions: {
-    resetUser() {
-      this.account = {
-        avatarImg: avatar1,
-        firstName: 'john',
-        lastName: 'Doe',
-        email: 'johnDoe@example.com',
-        org: 'ThemeSelection',
-        phone: '+1 (917) 543-9876',
-        address: '123 Main St, New York, NY 10001',
-        state: 'New York',
-        zip: '10001',
-        country: 'USA',
-        language: 'English',
-        timezone: '(GMT-11:00) International Date Line West',
-        currency: 'USD',
-      }
+    async fetchAccount() {
+      console.log(`start fetching account data ...`)
+
+      const response = await backendClient.getAccount()
+
+      this.account = response
+
     },
 
-    updateAccountSetting(newValue) {
+    async updateAccountSetting(newValue) {
       this.account = { ...newValue }
-      console.log(this.account)
+
+      console.log("new data"+ JSON.stringify(newValue), "*****")
+
+      const response = await backendClient.updateAccount(newValue)
+
     },
   },
 })

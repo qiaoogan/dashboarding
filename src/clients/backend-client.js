@@ -12,4 +12,17 @@ export const getBooks = async () => {
 
 }
 
+export const getAccount = async () => {
+  const url = buildUrl(backendConfig.SETTINGS_BATH_PATH, backendConfig.SETTINGS_ACCOUNT_PATH)
+
+  return await httpUtls.get(url)
+}
+
+export const updateAccount = async data => {
+  const url = buildUrl(backendConfig.SETTINGS_BATH_PATH, backendConfig.SETTINGS_ACCOUNT_PATH)
+  
+  return await httpUtls.put(url, data)
+
+}
+
 

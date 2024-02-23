@@ -1,25 +1,11 @@
 <script setup>
 import avatar1 from '@images/avatars/avatar-1.png'
 import { useAccoutSettingAccoutStore } from '@/stores/accountSettingsAccountStore'
+import { onBeforeMount, onMounted } from 'vue'
 
-// const accountDataStore.account.= {
-//   avatarImg: avatar1,
-//   firstName: 'john',
-//   lastName: 'Doe',
-//   email: 'johnDoe@example.com',
-//   org: 'ThemeSelection',
-//   phone: '+1 (917) 543-9876',
-//   address: '123 Main St, New York, NY 10001',
-//   state: 'New York',
-//   zip: '10001',
-//   country: 'USA',
-//   language: 'English',
-//   timezone: '(GMT-11:00) International Date Line West',
-//   currency: 'USD',
-// }
 const accountDataStore = useAccoutSettingAccoutStore()
 
-
+const isDataLoaded = ref(false)
 
 const refInputEl = ref()
 
@@ -46,9 +32,18 @@ const resetAvatar = () => {
   accountDataStore.account.avatarImg = accountDataStore.defaccount.avatarImg
 }
 
-// update account
-const updateAccount = () =>{
-  accountDataStore.updateAccountSetting(accountDataStore.account)
+onMounted(async () => {
+  await accountDataStore.fetchAccount()
+  isDataLoaded.value = true
+})
+
+
+const updateAccount = async () => {
+  try {
+    await accountDataStore.updateAccountSetting(accountDataStore.account)
+  } catch (error) {
+    console.error('Failed to update account:', error)
+  }
 }
 
 const timezones = [
@@ -119,7 +114,7 @@ const currencies = [
             rounded="lg"
             size="100"
             class="me-6"
-            :image="accountDataStore.account.avatarImg"
+            :image="avatar1"
           />
 
           <!-- 👉 Upload Photo -->
@@ -166,181 +161,187 @@ const currencies = [
         </VCardText>
 
         <VDivider />
-
-        <VCardText>
-          <!-- 👉 Form -->
-          <VForm class="mt-6">
-            <VRow>
-              <!-- 👉 First Name -->
-              <VCol
-                md="6"
-                cols="12"
-              >
-                <VTextField
-                  v-model="accountDataStore.account.firstName"
-                  placeholder="John"
-                  label="First Name"
-                />
-              </VCol>
-
-              <!-- 👉 Last Name -->
-              <VCol
-                md="6"
-                cols="12"
-              >
-                <VTextField
-                  v-model="accountDataStore.account.lastName"
-                  placeholder="Doe"
-                  label="Last Name"
-                />
-              </VCol>
-
-              <!-- 👉 Email -->
-              <VCol
-                cols="12"
-                md="6"
-              >
-                <VTextField
-                  v-model="accountDataStore.account.email"
-                  label="E-mail"
-                  placeholder="johndoe@gmail.com"
-                  type="email"
-                />
-              </VCol>
-
-              <!-- 👉 Organization -->
-              <VCol
-                cols="12"
-                md="6"
-              >
-                <VTextField
-                  v-model="accountDataStore.account.org"
-                  label="Organization"
-                  placeholder="ThemeSelection"
-                />
-              </VCol>
-
-              <!-- 👉 Phone -->
-              <VCol
-                cols="12"
-                md="6"
-              >
-                <VTextField
-                  v-model="accountDataStore.account.phone"
-                  label="Phone Number"
-                  placeholder="+1 (917) 543-9876"
-                />
-              </VCol>
-
-              <!-- 👉 Address -->
-              <VCol
-                cols="12"
-                md="6"
-              >
-                <VTextField
-                  v-model="accountDataStore.account.address"
-                  label="Address"
-                  placeholder="123 Main St, New York, NY 10001"
-                />
-              </VCol>
-
-              <!-- 👉 State -->
-              <VCol
-                cols="12"
-                md="6"
-              >
-                <VTextField
-                  v-model="accountDataStore.account.state"
-                  label="State"
-                  placeholder="New York"
-                />
-              </VCol>
-
-              <!-- 👉 Zip Code -->
-              <VCol
-                cols="12"
-                md="6"
-              >
-                <VTextField
-                  v-model="accountDataStore.account.zip"
-                  label="Zip Code"
-                  placeholder="10001"
-                />
-              </VCol>
-
-              <!-- 👉 Country -->
-              <VCol
-                cols="12"
-                md="6"
-              >
-                <VSelect
-                  v-model="accountDataStore.account.country"
-                  label="Country"
-                  :items="['USA', 'Canada', 'UK', 'India', 'Australia']"
-                  placeholder="Select Country"
-                />
-              </VCol>
-
-              <!-- 👉 Language -->
-              <VCol
-                cols="12"
-                md="6"
-              >
-                <VSelect
-                  v-model="accountDataStore.account.language"
-                  label="Language"
-                  placeholder="Select Language"
-                  :items="['English', 'Spanish', 'Arabic', 'Hindi', 'Urdu']"
-                />
-              </VCol>
-
-              <!-- 👉 Timezone -->
-              <VCol
-                cols="12"
-                md="6"
-              >
-                <VSelect
-                  v-model="accountDataStore.account.timezone"
-                  label="Timezone"
-                  placeholder="Select Timezone"
-                  :items="timezones"
-                  :menu-props="{ maxHeight: 200 }"
-                />
-              </VCol>
-
-              <!-- 👉 Currency -->
-              <VCol
-                cols="12"
-                md="6"
-              >
-                <VSelect
-                  v-model="accountDataStore.account.currency"
-                  label="Currency"
-                  placeholder="Select Currency"
-                  :items="currencies"
-                  :menu-props="{ maxHeight: 200 }"
-                />
-              </VCol>
-
-              <!-- 👉 Form Actions -->
-              <VCol
-                cols="12"
-                class="d-flex flex-wrap gap-4"
-              >
-                <VBtn @click="updateAccount">Save changes</VBtn>
-
-                <VBtn
-                  color="secondary"
-                  variant="tonal"
-                  type="reset"
-                  @click.prevent="resetForm"
+        <div v-if="isDataLoaded">
+          <VCardText>
+            <!-- 👉 Form -->
+            <VForm class="mt-6">
+              <VRow>
+                <!-- 👉 First Name -->
+                <VCol
+                  md="6"
+                  cols="12"
                 >
-                  Reset
-                </VBtn>
-              </VCol>
-            </VRow>
-          </VForm>
-        </VCardText>
+                  <VTextField
+                    v-model="accountDataStore.account.firstName"
+                    placeholder="John"
+                    label="First Name"
+                  />
+                </VCol>
+
+                <!-- 👉 Last Name -->
+                <VCol
+                  md="6"
+                  cols="12"
+                >
+                  <VTextField
+                    v-model="accountDataStore.account.lastName"
+                    placeholder="Doe"
+                    label="Last Name"
+                  />
+                </VCol>
+
+                <!-- 👉 Email -->
+                <VCol
+                  cols="12"
+                  md="6"
+                >
+                  <VTextField
+                    v-model="accountDataStore.account.email"
+                    label="E-mail"
+                    placeholder="johndoe@gmail.com"
+                    type="email"
+                  />
+                </VCol>
+
+                <!-- 👉 Organization -->
+                <VCol
+                  cols="12"
+                  md="6"
+                >
+                  <VTextField
+                    v-model="accountDataStore.account.org"
+                    label="Organization"
+                    placeholder="ThemeSelection"
+                  />
+                </VCol>
+
+                <!-- 👉 Phone -->
+                <VCol
+                  cols="12"
+                  md="6"
+                >
+                  <VTextField
+                    v-model="accountDataStore.account.phone"
+                    label="Phone Number"
+                    placeholder="+1 (917) 543-9876"
+                  />
+                </VCol>
+
+                <!-- 👉 Address -->
+                <VCol
+                  cols="12"
+                  md="6"
+                >
+                  <VTextField
+                    v-model="accountDataStore.account.address"
+                    label="Address"
+                    placeholder="123 Main St, New York, NY 10001"
+                  />
+                </VCol>
+
+                <!-- 👉 State -->
+                <VCol
+                  cols="12"
+                  md="6"
+                >
+                  <VTextField
+                    v-model="accountDataStore.account.state"
+                    label="State"
+                    placeholder="New York"
+                  />
+                </VCol>
+
+                <!-- 👉 Zip Code -->
+                <VCol
+                  cols="12"
+                  md="6"
+                >
+                  <VTextField
+                    v-model="accountDataStore.account.zip"
+                    label="Zip Code"
+                    placeholder="10001"
+                  />
+                </VCol>
+
+                <!-- 👉 Country -->
+                <VCol
+                  cols="12"
+                  md="6"
+                >
+                  <VSelect
+                    v-model="accountDataStore.account.country"
+                    label="Country"
+                    :items="['USA', 'Canada', 'UK', 'India', 'Australia']"
+                    placeholder="Select Country"
+                  />
+                </VCol>
+
+                <!-- 👉 Language -->
+                <VCol
+                  cols="12"
+                  md="6"
+                >
+                  <VSelect
+                    v-model="accountDataStore.account.language"
+                    label="Language"
+                    placeholder="Select Language"
+                    :items="['English', 'Spanish', 'Arabic', 'Hindi', 'Urdu']"
+                  />
+                </VCol>
+
+                <!-- 👉 Timezone -->
+                <VCol
+                  cols="12"
+                  md="6"
+                >
+                  <VSelect
+                    v-model="accountDataStore.account.timezone"
+                    label="Timezone"
+                    placeholder="Select Timezone"
+                    :items="timezones"
+                    :menu-props="{ maxHeight: 200 }"
+                  />
+                </VCol>
+
+                <!-- 👉 Currency -->
+                <VCol
+                  cols="12"
+                  md="6"
+                >
+                  <VSelect
+                    v-model="accountDataStore.account.currency"
+                    label="Currency"
+                    placeholder="Select Currency"
+                    :items="currencies"
+                    :menu-props="{ maxHeight: 200 }"
+                  />
+                </VCol>
+
+                <!-- 👉 Form Actions -->
+                <VCol
+                  cols="12"
+                  class="d-flex flex-wrap gap-4"
+                >
+                  <VBtn @click="updateAccount">
+                    Save changes
+                  </VBtn>
+
+                  <VBtn
+                    color="secondary"
+                    variant="tonal"
+                    type="reset"
+                    @click.prevent="resetForm"
+                  >
+                    Reset
+                  </VBtn>
+                </VCol>
+              </VRow>
+            </VForm>
+          </VCardText>
+        </div>
+        <div v-else>
+          Loading...
+        </div>
       </VCard>
     </VCol>
 
