@@ -38,9 +38,13 @@ pipeline {
                 sh "kubectl set image deployment/dashboarding-depl dashboarding=dashboarding:0.0.${BUILD_NUMBER}"
             }
         }
-        stage('API Tests') {
+        stage('UI Tests') {
             steps {
-                echo 'API tests for placeholder'
+                echo 'UI tests for placeholder'
+                script {
+                    // 触发另一个 Jenkins 作业
+                    build job: 'Dashboarding UI Tests - puppeteer'
+                }
             }
         }
         stage('Deploy UAT') {
